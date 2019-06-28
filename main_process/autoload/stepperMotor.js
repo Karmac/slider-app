@@ -10,7 +10,7 @@ const filename = 'currentSteps.txt'
 const connectedPins = [17, 18, 27, 22]
 // Cantidad de pasos necesarios para
 // llegar al final de los raíles.
-const totalSteps = 999
+const totalSteps = 2000
 // Tiempo entre activaciones de los devanados.
 const time = 0.05
 // Secuencia de activación de los devanados.
@@ -88,11 +88,7 @@ const runStepper = async (stops, duration) => {
     for (let i = 0; i < stops; i++) {
         for (let j = 0; j < stepsPerStop; j++) {
             await stepForward()
-            try {
-                await writeSteps(stepCounter++)
-            } catch (error) {
-                console.log(error)
-            }
+            await writeSteps(stepCounter++)
 
             if (mustStop === true) {
                 return Promise.reject('emergencyStop')
@@ -100,6 +96,17 @@ const runStepper = async (stops, duration) => {
         }
         if (i + 1 != stops) {
             await delay(duration)
+        }
+    }
+}
+
+const rewindStepper = async steps => {
+    for (let i = steps; i > 0; i--) {
+        await stepBack()
+        await writeSteps(i - 1)
+
+        if (mustStop === true) {
+            return Promise.reject('emergencyStop')
         }
     }
 }
@@ -112,6 +119,16 @@ ipcMain.on('mobile_startMotor', async (event, args) => {
         event.sender.send('mobile_startMotorResponse', true)
     } catch (error) {
         event.sender.send('mobile_startMotorResponse', error)
+    }
+})
+
+// Reinciar el motor, según el número de pasos dado.
+ipcMain.on('mobile_rewindMotor', async (event, steps) => {
+    try {
+        let response = await rewindStepper(steps)
+        event.sender.send('mobile_rewindMotorResponse', true)
+    } catch (error) {
+        event.sender.send('mobile_rewindMotorResponse', error)
     }
 })
 

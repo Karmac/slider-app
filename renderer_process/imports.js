@@ -45,9 +45,7 @@ const navigateToSection = function(sectionID) {
 
 // Añadir al documento todas las secciones.
 importSectionsToDOM()
-// Mostrar la sección por defecto.
-navigateToSection(config.default)
+// Ocultar todas las secciones.
+hideAllSections()
 // Click sobre un elemento con data-section=""
 setMenuOnClickEvent()
-
-navigateToSection('mobile_movement-settings')
