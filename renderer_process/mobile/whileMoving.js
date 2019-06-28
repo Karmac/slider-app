@@ -2,8 +2,8 @@ const { ipcRenderer } = require('electron')
 
 document.querySelector('.js-mobile_startMovement').addEventListener('click', event => {
     ipcRenderer.send('mobile_startMotor', {
-        stops: stopsSlider.noUiSlider.get(),
-        duration: durationSlider.noUiSlider.get(),
+        stops: parseInt(stopsSlider.noUiSlider.get()),
+        duration: parseInt(durationSlider.noUiSlider.get()),
     })
 
     ipcRenderer.once('mobile_startMotorResponse', (event, response) => {

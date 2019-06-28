@@ -38,10 +38,14 @@ const delay = timeout => {
 
 // Función de ayuda para anotar los pasos actuales en un archivo.
 const writeSteps = value => {
-    fileSystem.writeFile(filename, value, error => {
-        if (error) {
-            throw error
-        }
+    return new Promise((resolve, reject) => {
+        fileSystem.writeFile(filename, value, error => {
+            if (error) {
+                reject(error)
+            } else {
+                resolve()
+            }
+        })
     })
 }
 
@@ -79,12 +83,16 @@ const stepBack = async () => {
 const runStepper = async (stops, duration) => {
     // Cantidad de pasos entre cada parada.
     let stepsPerStop = Math.floor(totalSteps / stops)
-    let stepCounter = 0
+    let stepCounter = 1
 
     for (let i = 0; i < stops; i++) {
         for (let j = 0; j < stepsPerStop; j++) {
             await stepForward()
-            writeSteps(stepCounter++)
+            try {
+                await writeSteps(stepCounter++)
+            } catch (error) {
+                console.log(error)
+            }
 
             if (mustStop === true) {
                 return Promise.reject('emergencyStop')
