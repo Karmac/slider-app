@@ -7,8 +7,10 @@ document.querySelector('.js-mobile_startMovement').addEventListener('click', eve
     })
 
     ipcRenderer.once('mobile_startMotorResponse', (event, response) => {
-        if (response === true || response == 'emergencyStop') {
+        if (response === true) {
             navigateToSection('mobile_movement-completed')
+        } else if (response == 'emergencyStop') {
+            navigateToSection('mobile_emergency-stop')
         } else {
             triggerFatalError()
         }
