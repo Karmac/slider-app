@@ -1,0 +1,28 @@
+<template class="js-sectionTemplate">
+	<section id="mobile_movement-settings">
+
+		<div class="row flex">
+			<div class="col s12">
+				<h5 style="margin-bottom:0">Ajustar movimiento</h5>
+				<!--<p>Ajusta los diferentes parámetros y haz click en el botón para comenzar el movimiento.</p>-->
+
+				<div class="js-mobile_movementSettings" style="margin-bottom: 2.5em">
+					<div class="section" style="padding-top:0">
+						<p>Cantidad de paradas:</p>
+						<div class="js-mobile_movementSettingsStops"></div>
+					</div>
+					<div class="section">
+						<p>Duración de cada parada:</p>
+						<div class="js-mobile_movementSettingsDuration"></div>
+					</div>
+				</div>
+
+				<div class="section center-align" style="padding-top:0">
+					<a class="js-mobile_startMovement btn" data-section="mobile_while-moving"><i class="material-icons left">play_arrow</i>Comenzar el movimiento</a>
+				</div>
+			</div>
+		</div>
+
+		<script type="text/javascript" src="renderer_process/mobile/movementSettings.js"></script>
+	</section>
+</template>

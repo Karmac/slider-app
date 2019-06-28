@@ -1,0 +1,19 @@
+<template class="js-sectionTemplate">
+	<section id="fatal-error" class="valign-wrapper">
+		<div class="row flex">
+			<div class="col s12">
+				<h5>Error Fatal</h5>
+				<div class="section center-align">
+					<div class="card-panel red lighten-2 white-text left-align">
+						<span>Ha ocurrido un error fatal. La aplicación no puede seguir funcionando. Por favor, pulse el botón de reiniciar más abajo e intente realizar el procedimiento de nuevo.</span>
+						<br>
+						<span>Si desea más información, puede consultar la consola del ordenador.</span>
+					</div>
+					<a class="js-closeApp btn"><i class="material-icons left">close</i>Cerrar la aplicación</a>
+				</div>
+			</div>
+		</div>
+
+		<script>const { triggerFatalError } = require('./renderer_process/fatalError.js')</script>
+	</section>
+</template>

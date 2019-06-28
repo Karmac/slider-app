@@ -1,0 +1,70 @@
+@import "materialize/sass/materialize.scss";
+
+@font-face {
+  font-family: 'Material Icons';
+  font-style: normal;
+  font-weight: 400;
+  src: url(fonts/material-icons.woff2) format('woff2');
+}
+
+.material-icons {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+}
+
+
+html, body {
+	width: 100%;
+	font-size: 17px;
+}
+
+html,
+body,
+.container,
+.valign-wrapper {
+	height: 100%;
+}
+
+.flex {
+	flex: 1;
+}
+
+a,
+.hoverable {
+	cursor: pointer;
+}
+
+.card .card-title,
+.toast {
+	font-weight: 400;
+}
+
+.btn {
+	font-weight: 500;
+}
+
+.spinner-red-only {
+	border-color: #e57373;
+}
+
+h5 {
+	@extend .red-text, .text-lighten-2;
+}
+
+.object-center {
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.btn-large.red {
+	@extend .red
+}

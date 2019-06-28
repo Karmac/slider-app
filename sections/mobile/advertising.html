@@ -1,0 +1,45 @@
+<template class="js-sectionTemplate">
+	<section id="mobile_advertising" class="valign-wrapper">
+
+		<div class="row flex">
+			<div class="col s12">
+				<h5>Conexión de teléfonos</h5>
+				<p>El dispositivo se mostrará en tu teléfono con el nombre «Slider». Activa el Bluetooth y haz click en el siguiente botón.</p>
+
+				<div class="section center-align">
+					<a class="js-mobile_startAdvertising btn"><i class="material-icons left">bluetooth</i>Mostrar dispositivo</a>
+				</div>
+
+				<div class="js-mobile_advertisingTimeUp section hide">
+					<div class="card-panel amber lighten-3">
+						<span>El dispositivo ha dejado de mostrarse porque no se ha conectado ningún teléfono en el tiempo de espera. Vuelva a hacer click en el botón superior.</span>
+					</div>
+				</div>
+
+				<div class="js-mobile_bluetoothError section hide">
+					<div class="card-panel red lighten-3">
+						<span>Ha ocurrido un error. Compruebe que el Bluetooth está activado en el dispositivo y vuelva a intentarlo.</span>
+					</div>
+				</div>
+
+				<div class="section center-align">
+					<div class="preloader-wrapper small js-mobile_preloaderWrapper">
+						<div class="spinner-layer spinner-red-only">
+							<div class="circle-spinner left">
+								<div class="circle"></div>
+							</div>
+							<div class="gap-patch">
+								<div class="circle"></div>
+							</div>
+							<div class="circle-clipper right">
+								<div class="circle"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div> <!-- COL -->
+		</div>
+
+		<script>require('./renderer_process/mobile/advertising.js')</script>
+	</section>
+</template>
