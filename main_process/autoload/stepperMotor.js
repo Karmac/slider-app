@@ -87,19 +87,24 @@ const runStepper = async (stops, duration) => {
             writeSteps(stepCounter++)
 
             if (mustStop === true) {
-                break
+                return Promise.reject('emergencyStop')
             }
         }
-        await delay(duration)
+        if (i + 1 != stops) {
+            await delay(duration)
+        }
     }
-
-    return true
 }
 
 // Recibir la señal del proceso de renderizado y
 // comenzar el movimiento.
-ipcMain.on('mobile_startMotor', (event, args) => {
-    event.returnValue = runStepper(args.stops + 1, args.duration * 1000)
+ipcMain.on('mobile_startMotor', async (event, args) => {
+    try {
+        let response = await runStepper(args.stops + 1, args.duration * 1000)
+        event.sender.send('mobile_startMotorResponse', true)
+    } catch (error) {
+        event.sender.send('mobile_startMotorResponse', error)
+    }
 })
 
 // Detener el proceso cuando se hace click en
