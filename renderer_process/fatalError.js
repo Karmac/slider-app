@@ -3,7 +3,7 @@ const { getCurrentWindow } = require('electron').remote
 
 // Función para llamar al error fatal desde el proceso de renderizado.
 // Se exporta; hay que llamarla usando { triggerFatalError } = require(archivo).
-const triggerFatalError = () {
+const triggerFatalError = () => {
 	navigateToSection('fatal-error')
 }
 
@@ -13,10 +13,12 @@ ipcRenderer.on('triggerFatalError', (event, arg) => {
 })
 
 // Manejar todos los botones de cierre de la aplicación, para no repetir código.
-const buttons = document.querySelectorAll('.js-closeApp')
-buttons.forEach(button => {
-	button.addEventListener('click', event => {
-		getCurrentWindow().close()
+document.addEventListener('DOMContentLoaded', event => {
+	const buttons = document.querySelectorAll('.js-closeApp')
+	buttons.forEach(button => {
+		button.addEventListener('click', event => {
+			getCurrentWindow().close()
+		})
 	})
 })
 
