@@ -1,7 +1,9 @@
 const { ipcRenderer } = require('electron')
-const DOMHelpers = reqRenderer('DOMHelpers')
+const helpers = reqRenderer('DOMHelpers')
 
+// Cuenta atrás para desactivar la publicitación.
 const timeoutInterval = 30000
+let timeoutCounter = null
 
 const elements = {
 	button: document.querySelector('.js-mobile_startAdvertising'),
@@ -12,54 +14,55 @@ const elements = {
 	},
 }
 
-const disableInterface = function() {
-	// Desabilitar botón y mostrar el icono de carga.
-	DOMHelpers.toggleButton(elements.button)
+const disableInterface = () => {
+	// Desabilitar botón, cambiar su icono y mostrar el icono de carga.
+	helpers.toggleButton(elements.button)
 	elements.button.childNodes[0].innerHTML = 'bluetooth_searching'
-	DOMHelpers.togglePreloader(elements.preloader)
+	helpers.togglePreloader(elements.preloader)
 
 	hideAllNotifications()
 }
-const enableInterface = function() {
-	// Habilitar el botón y ocultar el icono de carga.
-	DOMHelpers.toggleButton(elements.button)
+
+const enableInterface = () => {
+	// Habilitar el botón, cambiar su icono y ocultar el icono de carga.
+	helpers.toggleButton(elements.button)
 	elements.button.childNodes[0].innerHTML = 'bluetooth'
-	DOMHelpers.togglePreloader(elements.preloader)
+	helpers.togglePreloader(elements.preloader)
 }
-const hideAllNotifications = function() {
+
+const hideAllNotifications = () => {
 	for (let key in elements.notice) {
-		DOMHelpers.hide(elements.notice[key])
+		helpers.hide(elements.notice[key])
 	}
 }
 
-let timeoutCounter = null
-
-elements.button.addEventListener('click', (event) => {
+elements.button.addEventListener('click', () => {
 	// Se envía una orden al proceso principal para que comience a
 	// publicitar el dispositivo.
 	// Si el proceso principal nos devuelve false mostramos un mensaje.
-	if (ipcRenderer.sendSync('mobile_startAdvertising', true) === true) {
+	if (ipcRenderer.sendSync('mobile_startAdvertising') === true) {
 		disableInterface()
 
-		timeoutCounter = setTimeout(function() {
+		// Cuenta atrás para apagar el Bluetooth.
+		timeoutCounter = setTimeout(() => {
+			// Argumento: enableInterface? true
 			ipcRenderer.send('mobile_stopAdvertising', true)
-			DOMHelpers.show(elements.notice.timeUp)
+			helpers.show(elements.notice.timeUp)
 		}, timeoutInterval)
-	}
-	else {
+	} else {
 		hideAllNotifications()
-		DOMHelpers.show(elements.notice.bluetoothError)
+		helpers.show(elements.notice.bluetoothError)
 	}
 })
 
-ipcRenderer.on('mobile_unexpectedStateChange', (event, arg) => {
+ipcRenderer.on('mobile_unexpectedStateChange', () => {
 	clearTimeout(timeoutCounter)
 	enableInterface()
-	DOMHelpers.show(elements.notice.bluetoothError)
-	navigateToSection('mobile_advertising')
+	helpers.show(elements.notice.bluetoothError)
+	// navigateToSection('mobile_advertising')
 })
 
-ipcRenderer.on('mobile_connectionAccepted', (event, arg) => {
+ipcRenderer.on('mobile_connectionAccepted', () => {
 	clearTimeout(timeoutCounter)
 	navigateToSection('mobile_confirmation')
 })

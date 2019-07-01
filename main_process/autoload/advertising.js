@@ -14,7 +14,7 @@ let rendererWindow = BrowserWindow.getAllWindows()[0]
 let isAdvertising = false
 
 // Se recibe la orden para comenzar a mostrar el dispositivo.
-ipcMain.on('mobile_startAdvertising', (event, arg) => {
+ipcMain.on('mobile_startAdvertising', (event) => {
 	// Si el Bluetooth está encendido devuelve true, sino se devuelve false
 	// para que el proceso de renderizado muestre un mensaje.
 	if (bleno.state === 'poweredOn') {
@@ -47,7 +47,7 @@ bleno.on('stateChange', (state) => {
 		bleno.stopAdvertising()
 		// Notificar al proceso de renderizado el cambio repentino del estado del
 		// Bluetooth, para mostrar un mensaje de alerta.
-		rendererWindow.webContents.send('mobile_unexpectedStateChange', true)
+		rendererWindow.webContents.send('mobile_unexpectedStateChange')
 	}
 })
 
