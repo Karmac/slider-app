@@ -39,6 +39,8 @@ const delay = timeout => {
 
 // Función de ayuda para anotar los pasos actuales en un archivo.
 const writeSteps = value => {
+    // Devuelve una Promise, que se completa si la lectura es correcta
+    // y se rechazará si hay algún error.
     return new Promise((resolve, reject) => {
         fileSystem.writeFile(filename, value, error => {
             if (error) {
@@ -51,6 +53,8 @@ const writeSteps = value => {
 }
 
 // Ejecutar una de las combinaciones de la secuencia.
+// La secuencia tiene 8 campos, y cada uno de ellos 4 valores,
+// uno para cada clavija.
 const step = async i => {
     for (let j = 0; j < 4; j++) {
         if (sequence[i][j] === 1) {
@@ -59,8 +63,10 @@ const step = async i => {
             pins[j].writeSync(0)
         }
     }
-    // Similar a sleep() en Python.
+    // Hay que esperar un tiempo para que el rotor
+    // gire hasta la nueva posición.
     await delay(time)
+    // Apagar todos los puertos GPIO.
     for (let j = 0; j < 4; j++) {
         pins[j].writeSync(0)
     }
@@ -84,11 +90,14 @@ const stepBack = async () => {
 const runStepper = async (stops, duration) => {
     // Cantidad de pasos entre cada parada.
     let stepsPerStop = Math.floor(totalSteps / stops)
+    // ¿Cuántos pasos vamos?
     let stepCounter = 1
 
     for (let i = 0; i < stops; i++) {
         for (let j = 0; j < stepsPerStop; j++) {
             await stepForward()
+            // ¡Ojo! Primero se ejecuta writeSteps(), y luego
+            // se suma 1 a stepCounter.
             await writeSteps(stepCounter++)
 
             if (mustStop === true) {

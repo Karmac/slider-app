@@ -1,4 +1,4 @@
-const {ipcRenderer } = require('electron')
+const { ipcRenderer } = require('electron')
 const fileSystem = require('fs')
 
 // Nombre del archivo para guardar los pasos actuales.
@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', event => {
 
         // En el proceso principal hay un try...catch que envía
         // una orden aquí, para ejecutar el código que corresponda.
-        ipcRenderer.once('mobile_rewindMotorResponse', (event, response) => {
+        ipcRenderer.once('mobile_rewindMotorResponse', (event, response) => {
             if (response === true) {
                 navigateToSection('home')
             } else if (response == 'emergencyStop') {
