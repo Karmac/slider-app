@@ -2,7 +2,11 @@ const { ipcRenderer } = require('electron')
 const helpers = reqRenderer('DOMHelpers')
 
 // Cuenta atrás para desactivar la publicitación.
+<<<<<<< HEAD
 const timeoutInterval = 30000
+=======
+const timeoutInterval = 3000
+>>>>>>> 8d60bb13553412dffa543092b9da3a8ceef795ec
 let timeoutCounter = null
 
 const elements = {
@@ -46,8 +50,15 @@ elements.button.addEventListener('click', () => {
 		// Cuenta atrás para apagar el Bluetooth.
 		timeoutCounter = setTimeout(() => {
 			// Argumento: enableInterface? true
+<<<<<<< HEAD
 			ipcRenderer.send('mobile_stopAdvertising', true)
 			helpers.show(elements.notice.timeUp)
+=======
+			/*
+			ipcRenderer.send('mobile_stopAdvertising', true)
+			helpers.show(elements.notice.timeUp)*/
+			alert('timeout')
+>>>>>>> 8d60bb13553412dffa543092b9da3a8ceef795ec
 		}, timeoutInterval)
 	} else {
 		hideAllNotifications()
