@@ -23,7 +23,7 @@ const toggleButton = element => {
 
 const togglePreloader = element => {
     const cls = element.classList
-    if (cls.contains('active')) {
+    if (!cls.contains('active')) {
         cls.add('active')
     } else {
         cls.remove('active')
