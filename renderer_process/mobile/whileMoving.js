@@ -16,6 +16,7 @@ document.querySelector('.js-mobile_startMovement').addEventListener('click', eve
         }
     })
 })
+
 document.querySelector('.js-emergencyStop').addEventListener('click', event => {
     ipcRenderer.send('mobile_emergencyStop', true)
 })

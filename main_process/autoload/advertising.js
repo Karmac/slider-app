@@ -1,6 +1,6 @@
 const { ipcMain, BrowserWindow } = require('electron')
 const bleno = require('bleno')
-const { green, red, blue } = require('chalk')
+const { green, red, magenta } = require('chalk')
 
 // Carga de los servicios y UUIDs GATT.
 const buildServices = reqMain('gatt/buildServices')
@@ -21,7 +21,7 @@ ipcMain.on('mobile_startAdvertising', (event, arg) => {
 		bleno.startAdvertising('Slider', uuids)
 		event.returnValue = true
 	} else {
-		console.log(red('ERROR:') + ' state is not poweredOn, cannot start advertising')
+		console.log(red('Bluetooth ERROR:') + ' state is not poweredOn, cannot start advertising')
 		event.returnValue = false
 	}
 });
@@ -33,17 +33,17 @@ ipcMain.on('mobile_stopAdvertising', (event, enableInterface) => {
 })
 
 // Desconectar el cliente cuando sea incorrecto.
-ipcMain.on('mobile_wrongConnectedDevice', (event, arg) => {
+ipcMain.on('mobile_wrongConnectedDevice', () => {
 	bleno.disconnect()
 })
 
 // Hay que detener el proceso cuando se desactiva el Bluetooth mientras
 // aún se está publicitando el dispositivo.
 bleno.on('stateChange', (state) => {
-	console.log('state change --> ' + state)
+	console.log(magenta('Bluetooth:') + ' stateChange -> ' + green(state))
 
 	if (isAdvertising === true && state !== 'poweredOn') {
-		console.log('ERROR: Bluetooth state changed unexpectedly')
+		console.log(red('Bluetooth ERROR:') + ' Bluetooth state changed unexpectedly')
 		bleno.stopAdvertising()
 		// Notificar al proceso de renderizado el cambio repentino del estado del
 		// Bluetooth, para mostrar un mensaje de alerta.
@@ -53,30 +53,30 @@ bleno.on('stateChange', (state) => {
 
 bleno.on('advertisingStart', (error) => {
 	if (error) {
-		console.log(red('ERROR: ') + error)
+		console.log(red('Bluetooth ERROR: ') + error)
 	} else {
-		console.log('Advertising started')
+		console.log(magenta('Bluetooth:') + ' advertisingStart')
 
 		isAdvertising = true
 		bleno.setServices(services, (error) => {
 			if (error) {
-				console.log(red('ERROR while setting services: ') + error)
+				console.log(red('Bluetooth ERROR:') + ' cannot set services -> ' + error)
 			}
 		})
 	}
 })
 bleno.on('advertisingStop', () => {
-	console.log('Advertising stopped')
+	console.log(magenta('Bluetooth:') + ' advertisingStop')
 	isAdvertising = false
 })
 
 // Otros eventos.
 bleno.on('accept', (clientAddress) => {
-	console.log('Accepted conection -> ' + green(clientAddress))
+	console.log(magenta('Bluetooth:') + ' accept -> ' + green(clientAddress))
 	// Enviar los datos del dispositivo conectado para poder realizar la confirmación.
 	rendererWindow.webContents.send('mobile_connectionAccepted', clientAddress)
 })
 
 bleno.on('disconnect', (clientAddress) => {
-	console.log('Disconnected -> ' + blue(clientAddress))
+	console.log(magenta('Bluetooth:') + ' disconnect -> ' + green(clientAddress))
 })

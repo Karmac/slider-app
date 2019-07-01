@@ -19,12 +19,14 @@ document.addEventListener('DOMContentLoaded', event => {
 
 	closeButtons.forEach(button => {
 		button.addEventListener('click', event => {
+			// Cerrar la aplicación.
 			getCurrentWindow().close()
 		})
 	})
 
 	relauchButtons.forEach(button => {
 		button.addEventListener('click', event => {
+			// Relanzar la aplicación y cerrar la instancia actual.
 			app.relaunch()
 			app.quit()
 		})

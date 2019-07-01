@@ -5,20 +5,17 @@ const glob = require('glob')
 let mainWindow = null
 
 // Funciones de ayuda para incluir archivos.
-global.base_dir = __dirname
-global.reqMain = function(filename) {
-	return require(base_dir + '/main_process/' + filename + '.js')
-}
-global.reqRenderer = function(filename) {
-	return require(base_dir + '/renderer_process/' + filename + '.js')
+global.APP_PATH = __dirname
+global.reqMain = filename => {
+	return require(APP_PATH + '/main_process/' + filename + '.js')
 }
 
 app.once('ready', () => {
 
-	resizable: false
 	mainWindow = new BrowserWindow({
 		title: app.getName(),
 		webPreferences: {
+			preload: path.join(APP_PATH, 'preload.js'),
 			nodeIntegration: true,
 		},
 		show: false,
@@ -26,20 +23,23 @@ app.once('ready', () => {
 		height: 400,
 	})
 
-	mainWindow.loadURL(path.join('file://', __dirname, '/index.html'))
+	mainWindow.loadURL(path.join('file://', APP_PATH, 'index.html'))
 
 	// mainWindow.webContents.openDevTools()
 
 	mainWindow.once('ready-to-show', () => {
+		// Ocultar el menú de herramientas.
 		mainWindow.setMenuBarVisibility(false)
+		// Ampliar y mostrar la ventana.
 		mainWindow.maximize()
+		// Evitar que se modifique el tamaño de la ventana.
+		// mainWindow.setResizable(false)
+		// Mostrar la ventana.
 		mainWindow.show()
 	})
 
-	// Cargar automáticamente de main_process/autoload/
-	const files = glob.sync(path.join(__dirname, 'main_process/autoload/*.js'))
-	files.forEach((file) => {
-		require(file)
-	})
+	// Cargar automáticamente todos los archivos en ./main_process/autoload/
+	const files = glob.sync(path.join(APP_PATH, 'main_process/autoload/*.js'))
+	files.forEach(file => require(file))
 
 })
