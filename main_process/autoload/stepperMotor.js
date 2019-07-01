@@ -1,6 +1,7 @@
 const { ipcMain } = require('electron')
 const fileSystem = require('fs')
-const GPIO = require('onoff').Gpio
+const { yellow, red } = require('chalk')
+const Gpio = require('onoff').Gpio
 
 // ¿Se debe parar en el siguiente paso?
 let mustStop = false
@@ -28,7 +29,7 @@ const sequence = [
 // Inicializar los puertos GPIO.
 let pins = []
 for (let pin of connectedPins) {
-    pins.push(new GPIO(pin, 'out'))
+    pins.push(new Gpio(pin, 'out'))
 }
 
 // Similar a la función sleep() en Python.
@@ -111,25 +112,35 @@ const rewindStepper = async steps => {
     }
 }
 
+const handleRequest = async (name, event, fn) => {
+    console.log(yellow('Motor: ') + name + ' -> start')
+
+    // Bucle try...catch. Si falla una función asíncrona saltará un
+    // error, porque siempre devuelven una instancia de Promise.
+    try {
+        let response = await fn()
+        event.sender.send(name + 'Response', true)
+        console.log(yellow('Motor: ') + name + ' -> completed')
+    } catch (error) {
+        console.log(red('Motor ERROR:') + name + ' -> ' + error)
+        event.sender.send(name + 'Response', error)
+    }
+}
+
 // Recibir la señal del proceso de renderizado y
 // comenzar el movimiento.
-ipcMain.on('mobile_startMotor', async (event, args) => {
-    try {
-        let response = await runStepper(args.stops + 1, args.duration * 1000)
-        event.sender.send('mobile_startMotorResponse', true)
-    } catch (error) {
-        event.sender.send('mobile_startMotorResponse', error)
-    }
+ipcMain.on('mobile_startMotor', (event, args) => {
+    // Utilizar el método handleRequest para evitar la repetición de código.
+    handleRequest('mobile_startMotor', event, async () => {
+        await runStepper(args.stops + 1, args.duration * 1000)
+    })
 })
 
 // Reinciar el motor, según el número de pasos dado.
-ipcMain.on('mobile_rewindMotor', async (event, steps) => {
-    try {
-        let response = await rewindStepper(steps)
-        event.sender.send('mobile_rewindMotorResponse', true)
-    } catch (error) {
-        event.sender.send('mobile_rewindMotorResponse', error)
-    }
+ipcMain.on('mobile_rewindMotor', async (event, steps) => {
+    handleRequest('mobile_rewindMotor', event, async () => {
+        await rewindStepper(steps)
+    })
 })
 
 // Detener el proceso cuando se hace click en
