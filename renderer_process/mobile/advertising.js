@@ -1,6 +1,7 @@
 const { ipcRenderer } = require('electron')
+const DOMHelpers = reqRenderer('DOMHelpers')
 
-const timeoutInterval = 60000
+const timeoutInterval = 30000
 
 const elements = {
 	button: document.querySelector('.js-mobile_startAdvertising'),
